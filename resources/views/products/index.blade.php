@@ -3,6 +3,7 @@
 @section('content')
 
     <h1>Lista de productos</h1>
+    <a class="btn btn-success" href="{{ route('products.create') }}">Crear producto</a>
 
     @empty($products)
         <div class="alert alert-warning">
@@ -19,6 +20,7 @@
                         <th>Price</th>
                         <th>Stock</th>
                         <th>Status</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,6 +32,15 @@
                             <td>{{$product->price}}</td>
                             <td>{{$product->stock}}</td>
                             <td>{{$product->status}}</td>
+                            <td>
+                                <a class="btn btn-link" href="{{ route('products.show',['product' => $product->id]) }}">Mostrar</a>
+                                <a class="btn btn-link" href="{{ route('products.edit',['product' => $product->id]) }}">Editar</a>
+                                <form method="POST" action="{{route('products.destroy',['product' => $product->id])}}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-link" type="submit">Eliminar</button>
+                                </form>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
