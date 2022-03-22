@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::resource('products','ProductController');
 
-// Route::get('/', 'MainController@index')->name('main');
+Route::get('/', 'MainController@index')->name('main');
 
 // Route::get('products','ProductController@index')->name('products.index');
 
