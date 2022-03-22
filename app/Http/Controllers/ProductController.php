@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,97 +20,74 @@ class ProductController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(){
-
-        //$products = Product::all();
-        //$products = DB::table('products')->get();
-
+    /**
+     * Mostrar todos los registros
+     */
+    public function index()
+    {
         return view('products.index')->with([
             'products' =>  Product::all()
         ]);
     }
 
-    public function create(){
+    /**
+     * Formulario para crear un registro
+     */
+    public function create()
+    {
         return view('products.create');
     }
 
-    public function store(){
-
-        $rules = [
-            'title' => 'required|max:255',
-            'description' => 'required|max:1000',
-            'price' => 'required|min:1',
-            'stock' => 'required|min:0',
-            'status' => 'required|in:available,unavailable',
-
-        ];
-
-        request()->validate($rules);
-
-        if(request()->status == 'available' && request()->stock == 0){
-            // se puede enviar con withErrors
-            //session()->flash('error','Si es producto esta disponible debe tener stock');
-            return redirect()
-                ->back()
-                ->withInput(request()->all())
-                ->withErrors('Si es producto esta disponible debe tener stock');
-        }
-
-        $product = Product::create(request()->all());
-
-        session()->flash('success','Producto creado correctamente');
-
-        // return redirect()->back();
+    /**
+     * Guardar un registro
+     */
+    public function store(ProductRequest $request)
+    {
+        $product = Product::create($request->validated());
         return redirect()
             ->route('products.index')
             ->withSuccess('Producto creado correctamente');
     }
 
-    public function show($product){
-
-        $product = Product::findOrFail($product);
-        //$product = DB::table('products')->find($product);
-
+    /**
+     * Mostrar un registro
+     */
+    public function show(Product $product)
+    {
         return view('products.show')->with([
             'product' => $product,
         ]);
-
     }
 
-    public function edit($product){
+    /**
+     * Formulario editar registro
+     */
+    public function edit(Product $product)
+    {
         return view('products.edit')->with([
-            'product' => Product::findOrFail($product)
+            'product' => $product
         ]);
     }
 
-    public function update($product){
-
-        $rules = [
-            'title' => 'required|max:255',
-            'description' => 'required|max:1000',
-            'price' => 'required|min:1',
-            'stock' => 'required|min:0',
-            'status' => 'required|in:available,unavailable',
-
-        ];
-
-        request()->validate($rules);
-
-        $product = Product::findOrFail($product);
-        $product->update(request()->all());
-
+    /**
+     * Actualizar registro
+     */
+    public function update(ProductRequest $request, Product $product)
+    {
+        $product->update($request->validated());
         return redirect()
             ->route('products.index')
             ->withSuccess('Producto editado correctamente');
     }
 
-    public function destroy($product){
-        $product = Product::findOrFail($product);
+    /**
+     * Eliminar registro
+     */
+    public function destroy(Product $product)
+    {
         $product->delete();
-
         return redirect()
             ->route('products.index')
             ->withSuccess('Producto eliminado correctamente');
     }
-
 }
