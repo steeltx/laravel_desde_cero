@@ -18,4 +18,10 @@ class Order extends Model
     protected $fillable = [
         'status',
     ];
+
+    public function payment()
+    {
+        //relacion 1:1 con el modelo de payment
+        return $this->hasOne(Payment::class);
+    }
 }

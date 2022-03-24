@@ -17,8 +17,11 @@ class CreatePaymentsTable extends Migration
             $table->id();
             $table->float('amount')->unsigned();
             $table->timestamp('payed_at')->nullable();
-            //order_id
+            $table->bigInteger('order_id')->unsigned();
             $table->timestamps();
+
+            //realizar la relacion 1:1 con ordenes
+            $table->foreign('order_id')->references('id')->on('orders');
         });
     }
 
